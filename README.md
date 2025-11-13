@@ -41,6 +41,8 @@ Requirements:
 * For cuDSS support an NVIDIA GPU of Pascal generation and newer is required
 * Only linux is currently supported
 
+If in venv
+
 ```bash
 pip install git+ssh://git@github.com/johnviljoen/spineax.git
 ```

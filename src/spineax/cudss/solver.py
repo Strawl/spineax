@@ -645,7 +645,7 @@ def solve_batch_vmap(vector_arg_values, batch_axes, **kwargs):
     # if only one of the sets of values are batched
     elif a_val or a_b is None:
         raise NotImplementedError("Both csr_values and b_values must be batched")
-    
+
     elif a_val is not None and a_b is not None and vmap_using_pseudo_batch is False:
         if csr_values.dtype == jnp.float32:
             solver = solve_batch_f32_p
