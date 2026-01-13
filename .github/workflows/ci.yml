@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    container:
+      image: nvidia/cuda:12.9.1-cudnn-devel-ubuntu24.04
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install UV
+        run: |
+          apt-get update
+          apt-get upgrade -y
+          apt-get install -y --no-install-recommends curl
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+      
+      - name: Build PyPi wheel
+        run: |
+          uv build --python 3.10 --wheel
+          uv build --python 3.11 --wheel
+          uv build --python 3.12 --wheel
+          uv build --python 3.13 --wheel
+          uv build --python 3.14 --wheel

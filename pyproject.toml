@@ -16,10 +16,22 @@ authors = [
     {name = "John Viljoen"}
 ]
 dependencies = [
-    "jax[cuda12]", # gives us XLA, CUDART, nvcc...
-    "nvidia-cudss-cu12", # cudss is in pip!!! how helpful
     "ninja", # for hot re-building on editable install
     "jaxtyping"
+]
+
+[project.optional-dependencies]
+cuda11 = [
+    "jax[cuda11]",
+    "nvidia-cudss-cu11"
+]
+cuda12 = [
+    "jax[cuda12]",
+    "nvidia-cudss-cu12"
+]
+cuda13 = [
+    "jax[cuda13]",
+    "nvidia-cudss-cu13"
 ]
 
 [tool.scikit-build]
@@ -31,4 +43,3 @@ editable.rebuild = true # in an editable install rebuild upon changes
 where = [
     "src"
 ]
-
