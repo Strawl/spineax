@@ -2,7 +2,7 @@
 requires = [
     "scikit-build-core >= 0.5", 
     "nanobind", 
-    "jax[cuda12]", 
+    "jax[cuda12]>=0.5.0",
     "nvidia-cudss-cu12",
 ]
 build-backend = "scikit_build_core.build"
@@ -15,10 +15,22 @@ authors = [
     {name = "John Viljoen"}
 ]
 dependencies = [
-    "jax[cuda12]", # gives us XLA, CUDART, nvcc...
+    "jax[cuda12]>=0.5.0", # gives us XLA, CUDART, nvcc...
     "nvidia-cudss-cu12", # cudss is in pip!!! how helpful
     "ninja", # for hot re-building on editable install
-    "jaxtyping"
+    "jaxtyping",
+]
+
+[project.optional-dependencies]
+dev = [
+    "nanobind",
+    "ninja",
+    "pytest",
+]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
 ]
 
 [tool.scikit-build]
@@ -30,4 +42,3 @@ editable.rebuild = true # in an editable install rebuild upon changes
 where = [
     "src"
 ]
-

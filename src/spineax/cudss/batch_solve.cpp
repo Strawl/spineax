@@ -336,8 +336,26 @@ DEFINE_CUDSS_FFI_HANDLERS(f64, ffi::F64);
 DEFINE_CUDSS_FFI_HANDLERS(c64, ffi::C64);
 DEFINE_CUDSS_FFI_HANDLERS(c128, ffi::C128);
 
+#if defined(XLA_FFI_API_MINOR) && (XLA_FFI_API_MINOR >= 2)
+  #define ADD_TYPE(d, DTYPE) do { \
+      using StateT = CudssBatchState<DTYPE>; \
+      static auto kStateTypeInfo = xla::ffi::MakeTypeInfo<StateT>(); \
+      (d)["type_info"] = nb::capsule(reinterpret_cast<void*>(&kStateTypeInfo)); \
+      (d)["type_id"]   = nb::capsule(reinterpret_cast<void*>(&StateT::id)); \
+    } while (0)
+#else
+  #define ADD_TYPE(d, DTYPE) do { \
+      (d)["state_type"] = nb::dict(); \
+    } while (0)
+#endif
+
 // nanobind module exporting macro
 #define EXPORT_CUDSS_HANDLERS(m, TypeName, DataType) \
+    m.def("state_dict_" #TypeName, []() { \
+        nb::dict d; \
+        ADD_TYPE(d, DataType); \
+        return d; \
+    }); \
     m.def("type_id_" #TypeName, []() { \
         return nb::capsule(reinterpret_cast<void*>(&CudssBatchState<DataType>::id)); \
     }); \
@@ -347,6 +365,7 @@ DEFINE_CUDSS_FFI_HANDLERS(c128, ffi::C128);
         d["execute"] = nb::capsule(reinterpret_cast<void*>(kCudssExecute##TypeName)); \
         return d; \
     });
+
 
 // generate all nanobind modules! :)
 NB_MODULE(batch_solve, m) {
